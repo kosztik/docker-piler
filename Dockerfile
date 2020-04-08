@@ -20,7 +20,13 @@ RUN groupadd piler \
 	&& ./configure --localstatedir=/var --with-database=mysql --enable-tcpwrappers \
 	&& make \
 	&& make install \
+	&& make key \
+	&& cp piler.key /usr/local/etc/piler \
+	&& chgrp piler /usr/local/etc/piler/piler.key \
+	&& chmod 640 /usr/local/etc/piler/piler.key \
 	&& ldconfig \
+	&& mkdir -p /etc/sphinxsearch \
+	&& ln -s /usr/local/etc/piler/sphinx.conf /etc/sphinxsearch \
 	&& service php7.0-fpm start
 COPY rootfs /
 RUN crontab /tmp/piler.cron
